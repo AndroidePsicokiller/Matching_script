@@ -9,7 +9,7 @@ from fuzzywuzzy import process
 from clean_db_names import clean_list, clean_word
 from gsearch_comparison import compare_search
 # from matching_utils import RatcliffObershelp, Levenshtein, edit_based, token_based
-from matching_utils import edit_based
+from matching_utils import edit_based, token_based
 
 # load suppliers names from DB to compare with
 match_against = pd.read_csv('supplier_db.csv')
@@ -57,7 +57,7 @@ input_list['Levenshtein'] = input_list.Levenshtein.apply(lambda x: return_value(
 now = datetime.datetime.now()
 print(now.day,'.',now.month,'.',now.year,' - ', now.hour, ':', now.minute, ':', now.second, ' - RatcliffObershelp')
 
-input_list['RatcliffObershelp'] = input_list.supplier_name.apply(lambda x: RatcliffObershelp(clean_word(x),list(match_against_clean.clean_name)))
+input_list['RatcliffObershelp'] = input_list.supplier_name.apply(lambda x: token_based(clean_word(x),list(match_against_clean.clean_name)),textdistance.ratcliff_obershelp)
 input_list['RatcliffObershelp_score'] = input_list.RatcliffObershelp.apply(lambda x: x[1])
 input_list['RatcliffObershelp'] = input_list.RatcliffObershelp.apply(lambda x: return_value(x[0],match_against_clean))
 
